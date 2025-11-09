@@ -12,16 +12,16 @@ const Banner = () => {
 
   return (
     <div className="w-11/12 mx-auto h-[500px] md:h-[600px] relative overflow-hidden rounded-xl my-10">
-      {/* Blurred background */}
+
       <img
         src={book1}
         alt="Background Book"
         className="w-full h-full object-cover filter blur-sm brightness-90 scale-105 rounded-xl"
       />
-      {/* Dark overlay */}
+  
       <div className="absolute inset-0 bg-black/30 rounded-xl"></div>
 
-      {/* Hero Text */}
+    
       <motion.div
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -39,7 +39,7 @@ const Banner = () => {
         </button>
       </motion.div>
 
-      {/* Floating Books */}
+  
       {books.map((book, index) => (
         <motion.img
           key={index}
