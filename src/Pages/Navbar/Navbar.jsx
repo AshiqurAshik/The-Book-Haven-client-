@@ -1,5 +1,6 @@
 import React from 'react';
 import { IoBook } from 'react-icons/io5';
+import { Link } from 'react-router';
 
 const Navbar = () => {
   return (
@@ -31,14 +32,27 @@ const Navbar = () => {
         </ul>
       </div>
 
-      <div className="navbar-end">
-        <a
-          className="px-6 py-2 rounded-full font-medium text-[#F8F4E8] bg-[#B58B6D] 
-             hover:bg-[#D17E5E] hover:scale-105 transition duration-300 ease-in-out shadow-md"
-        >
-          Login
-        </a>
-      </div>
+    <div className="navbar-end">
+  <Link
+    to="/login"
+    className="
+      px-6 py-2 
+      rounded-full 
+      font-medium 
+      text-[#F8F4E8] 
+      bg-[#B58B6D] 
+      hover:bg-[#D17E5E] 
+      hover:scale-105 
+      transition 
+      duration-300 
+      ease-in-out 
+      shadow-md
+    "
+  >
+    Login
+  </Link>
+</div>
+
     </div>
   );
 };
