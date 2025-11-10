@@ -13,11 +13,13 @@ import AllBooks from './Pages/AllBooks/AllBooks';
 import AddBook from './Pages/Add Book/AddBook';
 import MyBook from './Pages/My book/MyBook';
 import PrivateRoute from './Components/Private Route/PrivateRoute';
+import ErrorPage from './Components/Error page/ErrorPage';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Root></Root>,
+    errorElement:<ErrorPage></ErrorPage>,
 
     children: [
       {
@@ -26,21 +28,27 @@ const router = createBrowserRouter([
       },
       {
         path: '/all-books',
-        element: <PrivateRoute>
-          <AllBooks></AllBooks>
-        </PrivateRoute>
+        element: (
+          <PrivateRoute>
+            <AllBooks></AllBooks>
+          </PrivateRoute>
+        ),
       },
       {
         path: '/add-book',
-         element: <PrivateRoute>
-          <AddBook></AddBook>
-        </PrivateRoute>
+        element: (
+          <PrivateRoute>
+            <AddBook></AddBook>
+          </PrivateRoute>
+        ),
       },
       {
         path: '/my-books',
-         element: <PrivateRoute>
-          <MyBook></MyBook>
-        </PrivateRoute>
+        element: (
+          <PrivateRoute>
+            <MyBook></MyBook>
+          </PrivateRoute>
+        ),
       },
     ],
   },

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router';
+import Loading from '../../Components/Loading/Loading';
 
 const RecentBook = () => {
   const [books, setBooks] = useState([]);
@@ -20,9 +21,7 @@ const RecentBook = () => {
 
   if (loading) {
     return (
-      <p className="text-center mt-10 text-[#3B2C24] font-medium">
-        Loading recent books...
-      </p>
+      <Loading></Loading> 
     );
   }
 
