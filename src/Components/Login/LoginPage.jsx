@@ -43,7 +43,23 @@ const LoginPage = () => {
         navigate(location.state?.from || '/');
         setLoading(false);
 
-       
+        const newUser = {
+          name: result.user.displayName,
+          email: result.user.email,
+          image: result.user.photoURL,
+        };
+
+        fetch('http://localhost:3000/users', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify(newUser),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log('After saving user: ', data);
+          });
       })
       .catch(() => {
         toast.error('Google Sign-In failed. Please try again.');
