@@ -1,9 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { EyeIcon, EyeOffIcon, BookOpenIcon } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
+import { toast, ToastContainer } from 'react-toastify';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { auth } from '../../Firebase/Firebase.init';
+import 'react-toastify/dist/ReactToastify.css';
+import { AuthContext } from '../../Auth/AuthContext';
 
 const LoginPage = () => {
+  const { SignInUser, googleSignIn } = useContext(AuthContext);
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    setLoading(true);
+
+    SignInUser(email, password)
+      .then(() => {
+        toast.success('User logged in successfully!');
+        const from = location.state?.from?.pathname || '/';
+        navigate(from, { replace: true });
+
+        setLoading(false);
+      })
+      .catch(() => {
+        toast.error('Login failed! Please check your email and password.');
+      });
+  };
+
+  const handleGoogleSignIn = () => {
+    setLoading(true);
+    googleSignIn()
+      .then((result) => {
+        toast.success('Logged in with Google successfully!');
+        navigate(location.state?.from || '/');
+        setLoading(false);
+
+       
+      })
+      .catch(() => {
+        toast.error('Google Sign-In failed. Please try again.');
+      });
+  };
+
+  const handleForgotPassword = () => {
+    if (!resetEmail) {
+      toast.error('Please enter your email to reset password.');
+      return;
+    }
+
+    const actionCodeSettings = {
+      url: window.location.origin + '/login',
+      handleCodeInApp: true,
+    };
+
+    sendPasswordResetEmail(auth, resetEmail, actionCodeSettings)
+      .then(() => {
+        toast.success(
+          `Password reset email sent! Check your inbox for ${resetEmail}`
+        );
+        window.open('https://mail.google.com', '_blank');
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
 
   return (
     <div className="min-h-screen bg-[#F8F4E8] flex items-center justify-center px-4 py-10">
@@ -24,28 +92,31 @@ const LoginPage = () => {
             Login to Your Account 📚
           </h2>
 
-          <form className="space-y-5">
-            {/* Email */}
+          <form className="space-y-5" onSubmit={handleLogin}>
             <div>
               <label className="block text-[#3B2F2F] font-medium mb-1">
                 Email
               </label>
               <input
                 type="email"
+                name="email"
                 placeholder="Enter your email"
                 className="w-full border border-[#E8DCC2] rounded-lg px-4 py-3 bg-white focus:ring-2 focus:ring-[#B6864E] outline-none"
+                required
+                onChange={(e) => setResetEmail(e.target.value)}
               />
             </div>
 
-            {/* Password */}
             <div className="relative">
               <label className="block text-[#3B2F2F] font-medium mb-1">
                 Password
               </label>
               <input
                 type={showPassword ? 'text' : 'password'}
+                name="password"
                 placeholder="Enter your password"
                 className="w-full border border-[#E8DCC2] rounded-lg px-4 py-3 bg-white focus:ring-2 focus:ring-[#B6864E] outline-none pr-10"
+                required
               />
               <button
                 type="button"
@@ -60,25 +131,29 @@ const LoginPage = () => {
               </button>
             </div>
 
-            {/* Forgot Password */}
             <div className="text-right text-sm mt-1">
-              <a href="#" className="text-[#B6864E] hover:underline">
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="text-[#B6864E] hover:underline"
+              >
                 Forgot password?
-              </a>
+              </button>
             </div>
 
-            {/* Regular Login Button */}
             <button
               type="submit"
+              disabled={loading}
               className="w-full bg-[#B6864E] hover:bg-[#9C7243] text-white py-3 rounded-lg text-lg font-semibold shadow-md transition-transform hover:scale-[1.02]"
             >
-              Login
+              {loading ? 'Logging in...' : 'Login'}
             </button>
 
-            {/* Google Login Button */}
             <button
               type="button"
-              className="btn w-full flex items-center justify-center gap-2 bg-white text-black border-[#e5e5e5] py-3 rounded-lg hover:bg-gray-100"
+              onClick={handleGoogleSignIn}
+              disabled={loading}
+              className="btn w-full flex items-center justify-center gap-2 bg-white text-black border-[#e5e5e5] py-3 rounded-lg mt-3 hover:bg-gray-100 transition"
             >
               <svg
                 aria-label="Google logo"
@@ -111,7 +186,6 @@ const LoginPage = () => {
             </button>
           </form>
 
-          {/* Signup Link */}
           <p className="text-center text-sm text-[#3B2F2F] mt-6">
             Don’t have an account?{' '}
             <Link
@@ -123,6 +197,8 @@ const LoginPage = () => {
           </p>
         </div>
       </div>
+
+      <ToastContainer position="top-right" autoClose={2500} hideProgressBar />
     </div>
   );
 };

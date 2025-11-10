@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { IoBook } from 'react-icons/io5';
 import { NavLink } from 'react-router';
+import { toast } from 'react-toastify';
+import { AuthContext } from '../../Auth/AuthContext';
 
 const Navbar = () => {
+  const { user, signOutUser } = useContext(AuthContext);
+
+  const handleSignOut = () => {
+    signOutUser()
+      .then(() => {
+        toast.success('User signed out successfully!');
+      })
+      .catch((err) => toast.error(err.message));
+  };
+
   return (
     <div
       className="navbar shadow-sm px-6 py-4"
@@ -69,24 +81,45 @@ const Navbar = () => {
       </div>
 
       <div className="navbar-end">
-        <NavLink
-          to="/login"
-          className="
-            px-6 py-2 
-            rounded-full 
-            font-medium 
-            text-[#F8F4E8] 
-            bg-[#B58B6D] 
-            hover:bg-[#D17E5E] 
-            hover:scale-105 
-            transition 
-            duration-300 
-            ease-in-out 
-            shadow-md
-          "
-        >
-          Login
-        </NavLink>
+        {user ? (
+          <button
+            onClick={handleSignOut}
+            className="
+              px-6 py-2 
+              rounded-full 
+              font-medium 
+              text-[#F8F4E8] 
+              bg-[#B58B6D] 
+              hover:bg-[#D17E5E] 
+              hover:scale-105 
+              transition 
+              duration-300 
+              ease-in-out 
+              shadow-md
+            "
+          >
+            Sign Out
+          </button>
+        ) : (
+          <NavLink
+            to="/login"
+            className="
+              px-6 py-2 
+              rounded-full 
+              font-medium 
+              text-[#F8F4E8] 
+              bg-[#B58B6D] 
+              hover:bg-[#D17E5E] 
+              hover:scale-105 
+              transition 
+              duration-300 
+              ease-in-out 
+              shadow-md
+            "
+          >
+            Login
+          </NavLink>
+        )}
       </div>
     </div>
   );

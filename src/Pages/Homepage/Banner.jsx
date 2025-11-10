@@ -6,22 +6,21 @@ import book2 from '../../assets/book2.jpg';
 import book3 from '../../assets/book3.jpg';
 import book4 from '../../assets/book4.jpg';
 import book5 from '../../assets/book5.jpg';
+import { Link } from 'react-router';
 
 const Banner = () => {
   const books = [book1, book2, book3, book4, book5];
 
   return (
     <div className="w-11/12 mx-auto h-[500px] md:h-[600px] relative overflow-hidden rounded-xl my-10">
-
       <img
         src={book1}
         alt="Background Book"
         className="w-full h-full object-cover filter blur-sm brightness-90 scale-105 rounded-xl"
       />
-  
+
       <div className="absolute inset-0 bg-black/30 rounded-xl"></div>
 
-    
       <motion.div
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -34,12 +33,14 @@ const Banner = () => {
         <p className="text-lg md:text-2xl mb-6 drop-shadow-md">
           Find your next favorite book at Book Haven.
         </p>
-        <button className="px-6 py-2 rounded-full bg-[#D17E5E] text-[#F8F4E8] font-semibold hover:bg-[#B85F3E] transition drop-shadow-md">
+        <Link
+          to="/all-books"
+          className="px-6 py-2 rounded-full bg-[#D17E5E] text-[#F8F4E8] font-semibold hover:bg-[#B85F3E] transition drop-shadow-md"
+        >
           Browse All Books
-        </button>
+        </Link>
       </motion.div>
 
-  
       {books.map((book, index) => (
         <motion.img
           key={index}
