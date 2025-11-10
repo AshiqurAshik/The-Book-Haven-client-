@@ -7,28 +7,29 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen bg-[#F8F4E8] flex items-center justify-center px-4 py-10">
-    
       <div className="w-full max-w-4xl bg-white shadow-2xl rounded-3xl overflow-hidden flex flex-col lg:flex-row">
-        
-
+        {/* Left Side */}
         <div className="lg:w-1/2 bg-gradient-to-br from-[#C19A6B] to-[#B6864E] flex flex-col justify-center items-center text-white p-10">
           <BookOpenIcon size={60} className="mb-6" />
           <h2 className="text-4xl font-bold mb-3">Welcome Back</h2>
           <p className="text-center text-sm opacity-90 leading-relaxed max-w-xs">
-            Sign in to continue exploring, reading, and collecting your favorite books from our library.
+            Sign in to continue exploring, reading, and collecting your favorite
+            books from our library.
           </p>
         </div>
 
-        
+        {/* Right Side */}
         <div className="lg:w-1/2 p-10 bg-[#FFFDF8]">
           <h2 className="text-3xl font-bold text-[#3B2F2F] mb-6 text-center">
             Login to Your Account 📚
           </h2>
 
           <form className="space-y-5">
-       
+            {/* Email */}
             <div>
-              <label className="block text-[#3B2F2F] font-medium mb-1">Email</label>
+              <label className="block text-[#3B2F2F] font-medium mb-1">
+                Email
+              </label>
               <input
                 type="email"
                 placeholder="Enter your email"
@@ -36,8 +37,11 @@ const LoginPage = () => {
               />
             </div>
 
+            {/* Password */}
             <div className="relative">
-              <label className="block text-[#3B2F2F] font-medium mb-1">Password</label>
+              <label className="block text-[#3B2F2F] font-medium mb-1">
+                Password
+              </label>
               <input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Enter your password"
@@ -48,29 +52,72 @@ const LoginPage = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-[42px] text-[#B6864E] hover:text-[#3B2F2F]"
               >
-                {showPassword ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
+                {showPassword ? (
+                  <EyeOffIcon size={20} />
+                ) : (
+                  <EyeIcon size={20} />
+                )}
               </button>
             </div>
 
-
+            {/* Forgot Password */}
             <div className="text-right text-sm mt-1">
               <a href="#" className="text-[#B6864E] hover:underline">
                 Forgot password?
               </a>
             </div>
 
-
+            {/* Regular Login Button */}
             <button
               type="submit"
               className="w-full bg-[#B6864E] hover:bg-[#9C7243] text-white py-3 rounded-lg text-lg font-semibold shadow-md transition-transform hover:scale-[1.02]"
             >
               Login
             </button>
+
+            {/* Google Login Button */}
+            <button
+              type="button"
+              className="btn w-full flex items-center justify-center gap-2 bg-white text-black border-[#e5e5e5] py-3 rounded-lg hover:bg-gray-100"
+            >
+              <svg
+                aria-label="Google logo"
+                width="16"
+                height="16"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+              >
+                <g>
+                  <path d="m0 0H512V512H0" fill="#fff"></path>
+                  <path
+                    fill="#34a853"
+                    d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"
+                  ></path>
+                  <path
+                    fill="#4285f4"
+                    d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"
+                  ></path>
+                  <path
+                    fill="#fbbc02"
+                    d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"
+                  ></path>
+                  <path
+                    fill="#ea4335"
+                    d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"
+                  ></path>
+                </g>
+              </svg>
+              Login with Google
+            </button>
           </form>
 
+          {/* Signup Link */}
           <p className="text-center text-sm text-[#3B2F2F] mt-6">
             Don’t have an account?{' '}
-            <Link to="/register" className="text-[#B6864E] font-semibold hover:underline">
+            <Link
+              to="/register"
+              className="text-[#B6864E] font-semibold hover:underline"
+            >
               Sign up
             </Link>
           </p>
