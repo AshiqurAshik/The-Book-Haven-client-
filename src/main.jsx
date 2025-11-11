@@ -1,7 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
-
 import { createBrowserRouter } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
 import Root from './Components/Root/Root';
@@ -14,23 +13,20 @@ import AddBook from './Pages/Add Book/AddBook';
 import MyBook from './Pages/My book/MyBook';
 import PrivateRoute from './Components/Private Route/PrivateRoute';
 import ErrorPage from './Components/Error page/ErrorPage';
+import BookDetails from './Pages/Book Details/BookDetails'; // ✅ fixed casing
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Root></Root>,
-    errorElement:<ErrorPage></ErrorPage>,
-
+    element: <Root />,
+    errorElement: <ErrorPage />,
     children: [
-      {
-        index: true,
-        Component: Home,
-      },
+      { index: true, Component: Home },
       {
         path: '/all-books',
         element: (
           <PrivateRoute>
-            <AllBooks></AllBooks>
+            <AllBooks />
           </PrivateRoute>
         ),
       },
@@ -38,7 +34,7 @@ const router = createBrowserRouter([
         path: '/add-book',
         element: (
           <PrivateRoute>
-            <AddBook></AddBook>
+            <AddBook />
           </PrivateRoute>
         ),
       },
@@ -46,21 +42,28 @@ const router = createBrowserRouter([
         path: '/my-books',
         element: (
           <PrivateRoute>
-            <MyBook></MyBook>
+            <MyBook />
           </PrivateRoute>
         ),
       },
     ],
   },
-
+  {
+    path: '/books/:id',
+    element: (
+      <PrivateRoute>
+        <BookDetails /> 
+      </PrivateRoute>
+    ),
+  },
   {
     path: '/login',
-    Component: Login,
+    Component: Login
   },
 
   {
     path: '/register',
-    Component: Register,
+    Component: Register
   },
 ]);
 
