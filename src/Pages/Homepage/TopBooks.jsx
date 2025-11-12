@@ -1,44 +1,47 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router';
+import { NavLink } from 'react-router';
+import axios from 'axios';
 import Loading from '../../Components/Loading/Loading';
 
-const RecentBook = () => {
+const TopBooks = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3000/recentBook')
-      .then((res) => res.json())
-      .then((data) => {
-        setBooks(data);
+    const fetchTopBooks = async () => {
+      try {
+        const res = await axios.get('http://localhost:3000/books');
+        const sortedBooks = res.data
+          .sort((a, b) => b.rating - a.rating) 
+          .slice(0, 3); 
+        setBooks(sortedBooks);
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Error fetching recent books:', err);
+      } catch (err) {
+        console.error('Error fetching top books:', err);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchTopBooks();
   }, []);
 
-  if (loading) {
-    return <Loading />;
-  }
+  if (loading) return <Loading />;
 
-  if (books.length === 0) {
+  if (books.length === 0)
     return (
       <p className="text-center mt-10 text-[#3B2C24] font-medium">
-        No recent books found.
+        No top rated books found.
       </p>
     );
-  }
 
   return (
-    <div className=" min-h-screen py-12">
-      <div className="w-11/12 mx-auto">
-        <h2 className="text-4xl font-bold mb-10 text-center text-[#3B2C24]">
-          Recent Books
+    <section className=" py-16">
+      <div className="max-w-7xl mx-auto px-6">
+        <h2 className="text-4xl font-bold mb-12 text-center text-[#3B2C24]">
+          Top Rated Books
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 justify-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8 justify-items-center">
           {books.map((book) => (
             <div
               key={book._id}
@@ -47,12 +50,12 @@ const RecentBook = () => {
               <img
                 src={book.coverImage}
                 alt={book.title}
-                className="w-full h-auto max-h-64 object-contain rounded-t-2xl bg-[#FAF9F6]"
+                className="w-full h-64 object-contain rounded-t-2xl bg-[#FAF9F6]"
               />
 
               <div className="p-5 flex flex-col flex-grow">
-                <h3 className="text-xl font-bold mb-3">{book.title}</h3>
-                <p className="text-sm mb-3 font-medium text-[#3B2C24]">
+                <h3 className="text-xl font-bold mb-2">{book.title}</h3>
+                <p className="text-sm mb-2 font-medium text-[#3B2C24]">
                   by {book.author}
                 </p>
 
@@ -65,19 +68,19 @@ const RecentBook = () => {
                   </span>
                 </div>
 
-                <Link
+                <NavLink
                   to={`/books/${book._id}`}
-                  className="mt-auto text-center bg-[#4C3A2F] text-white py-2 rounded-xl hover:bg-[#3B2C24] transition font-semibold"
+                  className="mt-auto bg-[#4C3A2F] text-white py-2 rounded-xl hover:bg-[#3B2C24] transition font-semibold text-center"
                 >
                   View Details
-                </Link>
+                </NavLink>
               </div>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
-export default RecentBook;
+export default TopBooks;

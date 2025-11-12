@@ -12,14 +12,22 @@ import {
 import axios from 'axios';
 
 const genreStyles = {
-  Fiction: { icon: <BookOpenIcon className="w-10 h-10 text-blue-600" />, gradient: 'from-blue-100 to-blue-50' },
-  Mystery: { icon: <UsersIcon className="w-10 h-10 text-green-600" />, gradient: 'from-green-100 to-green-50' },
-  'Sci-Fi': { icon: <RocketIcon className="w-10 h-10 text-purple-600" />, gradient: 'from-purple-100 to-purple-50' },
-  Romance: { icon: <HeartIcon className="w-10 h-10 text-red-600" />, gradient: 'from-red-100 to-red-50' },
-  Fantasy: { icon: <StarIcon className="w-10 h-10 text-yellow-600" />, gradient: 'from-yellow-100 to-yellow-50' },
-  Biography: { icon: <GlobeIcon className="w-10 h-10 text-teal-600" />, gradient: 'from-teal-100 to-teal-50' },
-  Music: { icon: <MusicIcon className="w-10 h-10 text-pink-600" />, gradient: 'from-pink-100 to-pink-50' },
-  Cinema: { icon: <FilmIcon className="w-10 h-10 text-indigo-600" />, gradient: 'from-indigo-100 to-indigo-50' },
+  Fiction: {
+    icon: <BookOpenIcon className="w-10 h-10 text-blue-600" />,
+    gradient: 'from-blue-100 to-blue-50',
+  },
+  Mystery: {
+    icon: <UsersIcon className="w-10 h-10 text-green-600" />,
+    gradient: 'from-green-100 to-green-50',
+  },
+  'Sci-Fi': {
+    icon: <RocketIcon className="w-10 h-10 text-purple-600" />,
+    gradient: 'from-purple-100 to-purple-50',
+  },
+  Romance: {
+    icon: <HeartIcon className="w-10 h-10 text-red-600" />,
+    gradient: 'from-red-100 to-red-50',
+  },
 };
 
 const GenreSection = () => {
@@ -58,7 +66,7 @@ const GenreSection = () => {
   }, []);
 
   return (
-    <section className="bg-gray-50 py-16">
+    <section className=" py-16">
       <div className="max-w-7xl mx-auto px-6">
         <h2 className="text-4xl font-extrabold mb-12 text-center text-gray-800">
           Top Genres
