@@ -1,18 +1,19 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { AuthContext } from '../../Auth/AuthContext';
 import Loading from '../../Components/Loading/Loading';
-import { Link } from 'react-router';
 import Swal from 'sweetalert2';
+import { toast, Toaster } from 'react-hot-toast';
 
 const MyBook = () => {
   const { user } = useContext(AuthContext);
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [currentBook, setCurrentBook] = useState(null);
 
   const fetchBooks = () => {
     if (!user?.email) return;
-
     setLoading(true);
     fetch(`http://localhost:3000/books/by-email/${user.email}`)
       .then((res) => {
@@ -45,17 +46,45 @@ const MyBook = () => {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:3000/books/${id}`, {
-          method: 'DELETE',
-        })
+        fetch(`http://localhost:3000/books/${id}`, { method: 'DELETE' })
           .then((res) => res.json())
           .then(() => {
             setBooks((prev) => prev.filter((book) => book._id !== id));
-            Swal.fire('Deleted!', 'Your book has been deleted.', 'success');
+            toast.success('Book deleted successfully!');
           })
-          .catch((err) => console.error(err));
+          .catch((err) => toast.error('Failed to delete book!'));
       }
     });
+  };
+
+  const handleUpdateSubmit = (e) => {
+    e.preventDefault();
+    if (!currentBook) return;
+
+    const updatedFields = {};
+    if (currentBook.title) updatedFields.title = currentBook.title;
+    if (currentBook.author) updatedFields.author = currentBook.author;
+    if (currentBook.genre) updatedFields.genre = currentBook.genre;
+    if (currentBook.rating) updatedFields.rating = currentBook.rating;
+    if (currentBook.summary) updatedFields.summary = currentBook.summary;
+    if (currentBook.coverImage)
+      updatedFields.coverImage = currentBook.coverImage;
+    if (currentBook.language) updatedFields.language = currentBook.language;
+    if (currentBook.publicationYear)
+      updatedFields.publicationYear = currentBook.publicationYear;
+
+    fetch(`http://localhost:3000/books/${currentBook._id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedFields),
+    })
+      .then((res) => res.json())
+      .then(() => {
+        toast.success('Book updated successfully!');
+        setModalOpen(false);
+        fetchBooks();
+      })
+      .catch((err) => toast.error('Failed to update book!'));
   };
 
   if (loading) return <Loading />;
@@ -72,6 +101,7 @@ const MyBook = () => {
 
   return (
     <div className="py-10 px-5 max-w-7xl mx-auto">
+      <Toaster position="top-right" reverseOrder={false} />
       <h2 className="text-4xl font-extrabold mb-8 text-center text-[#4C3A2F]">
         My Books
       </h2>
@@ -126,12 +156,15 @@ const MyBook = () => {
                   ⭐ {book.rating}
                 </td>
                 <td className="px-6 py-4 flex gap-2">
-                  <Link
-                    to={`/add-book/${book._id}`}
+                  <button
+                    onClick={() => {
+                      setCurrentBook(book);
+                      setModalOpen(true);
+                    }}
                     className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg font-semibold transition"
                   >
                     Update
-                  </Link>
+                  </button>
                   <button
                     onClick={() => handleDelete(book._id)}
                     className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg font-semibold transition"
@@ -144,6 +177,106 @@ const MyBook = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Update Modal */}
+      {modalOpen && currentBook && (
+        <div className="modal modal-open">
+          <div className="modal-box w-11/12 max-w-xl">
+            <h3 className="font-bold text-2xl mb-4">Update Book</h3>
+            <form onSubmit={handleUpdateSubmit} className="flex flex-col gap-3">
+              <input
+                type="text"
+                placeholder="Title"
+                value={currentBook.title || ''}
+                onChange={(e) =>
+                  setCurrentBook({ ...currentBook, title: e.target.value })
+                }
+                className="input input-bordered w-full"
+                required
+              />
+              <input
+                type="text"
+                placeholder="Author"
+                value={currentBook.author || ''}
+                onChange={(e) =>
+                  setCurrentBook({ ...currentBook, author: e.target.value })
+                }
+                className="input input-bordered w-full"
+                required
+              />
+              <input
+                type="text"
+                placeholder="Genre"
+                value={currentBook.genre || ''}
+                onChange={(e) =>
+                  setCurrentBook({ ...currentBook, genre: e.target.value })
+                }
+                className="input input-bordered w-full"
+              />
+              <input
+                type="number"
+                step="0.1"
+                placeholder="Rating"
+                value={currentBook.rating || ''}
+                onChange={(e) =>
+                  setCurrentBook({ ...currentBook, rating: e.target.value })
+                }
+                className="input input-bordered w-full"
+              />
+              <textarea
+                placeholder="Summary"
+                value={currentBook.summary || ''}
+                onChange={(e) =>
+                  setCurrentBook({ ...currentBook, summary: e.target.value })
+                }
+                className="textarea textarea-bordered w-full"
+              />
+              <input
+                type="text"
+                placeholder="Cover Image URL"
+                value={currentBook.coverImage || ''}
+                onChange={(e) =>
+                  setCurrentBook({ ...currentBook, coverImage: e.target.value })
+                }
+                className="input input-bordered w-full"
+              />
+              <input
+                type="text"
+                placeholder="Language"
+                value={currentBook.language || ''}
+                onChange={(e) =>
+                  setCurrentBook({ ...currentBook, language: e.target.value })
+                }
+                className="input input-bordered w-full"
+              />
+              <input
+                type="number"
+                placeholder="Publication Year"
+                value={currentBook.publicationYear || ''}
+                onChange={(e) =>
+                  setCurrentBook({
+                    ...currentBook,
+                    publicationYear: e.target.value,
+                  })
+                }
+                className="input input-bordered w-full"
+              />
+              <div className="modal-action mt-2">
+                <button
+                  type="button"
+                  className="btn btn-ghost"
+                  onClick={() => setModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Update
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
