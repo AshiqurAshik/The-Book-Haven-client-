@@ -94,9 +94,12 @@ const MyBook = () => {
     );
   if (books.length === 0)
     return (
-      <p className="text-center mt-10 text-gray-600 font-medium">
+      <div className='h-100'>
+        <p className="text-center mt-10 text-gray-600 font-medium">
         You haven't added any books yet.
       </p>
+      </div>
+      
     );
 
   return (
