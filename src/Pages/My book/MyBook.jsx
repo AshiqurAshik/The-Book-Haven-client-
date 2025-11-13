@@ -12,12 +12,13 @@ const MyBook = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [currentBook, setCurrentBook] = useState(null);
 
+  // Fetch user's books
   const fetchBooks = async () => {
     if (!user?.email) return;
     setLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:3000/books/by-email/${user.email}`
+        `${import.meta.env.VITE_API_URL}/books/by-email/${user.email}`
       );
       if (!res.ok) throw new Error('Failed to fetch books');
       const data = await res.json();
@@ -34,6 +35,7 @@ const MyBook = () => {
     fetchBooks();
   }, [user]);
 
+  // Delete book
   const handleDelete = (id) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -46,21 +48,27 @@ const MyBook = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await fetch(`http://localhost:3000/books/${id}`, {
-            method: 'DELETE',
-          });
+          const res = await fetch(
+            `${import.meta.env.VITE_API_URL}/books/${id}`,
+            {
+              method: 'DELETE',
+            }
+          );
+          if (!res.ok) throw new Error('Failed to delete book');
           setBooks((prev) => prev.filter((book) => book._id !== id));
           toast.success('Book deleted successfully!');
         } catch (err) {
+          console.error(err);
           toast.error('Failed to delete book!');
         }
       }
     });
   };
 
+  // Update book
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
-    if (!currentBook) return;
+    if (!currentBook || !currentBook._id) return;
 
     const updatedFields = {};
     [
@@ -73,28 +81,47 @@ const MyBook = () => {
       'language',
       'publicationYear',
     ].forEach((key) => {
-      if (currentBook[key]) updatedFields[key] = currentBook[key];
+      if (
+        currentBook[key] !== undefined &&
+        currentBook[key] !== null &&
+        currentBook[key] !== ''
+      ) {
+        updatedFields[key] =
+          key === 'rating' || key === 'publicationYear'
+            ? Number(currentBook[key])
+            : currentBook[key];
+      }
     });
 
+    console.log('Updating book:', currentBook._id, updatedFields);
+
     try {
-      await fetch(`http://localhost:3000/books/${currentBook._id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedFields),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/books/${currentBook._id}`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedFields),
+        }
+      );
+      if (!res.ok) throw new Error('Failed to update book');
+
       toast.success('Book updated successfully!');
       setModalOpen(false);
       fetchBooks();
     } catch (err) {
+      console.error(err);
       toast.error('Failed to update book!');
     }
   };
 
   if (loading) return <Loading />;
+
   if (error)
     return (
       <p className="text-red-600 text-center mt-10 font-semibold">{error}</p>
     );
+
   if (!books.length)
     return (
       <div className="h-100">
@@ -184,6 +211,7 @@ const MyBook = () => {
         </table>
       </div>
 
+      {/* Update Modal */}
       {modalOpen && currentBook && (
         <div className="modal modal-open">
           <div className="modal-box w-11/12 max-w-xl dark:bg-[#2A1F17] transition-colors duration-500">
@@ -228,7 +256,10 @@ const MyBook = () => {
                     onChange={(e) =>
                       setCurrentBook({
                         ...currentBook,
-                        [field]: e.target.value,
+                        [field]:
+                          field === 'rating' || field === 'publicationYear'
+                            ? Number(e.target.value)
+                            : e.target.value,
                       })
                     }
                     className="input input-bordered w-full dark:bg-[#3B1F14] dark:text-[#FFF8F1]"

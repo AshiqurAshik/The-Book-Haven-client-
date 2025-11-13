@@ -7,7 +7,9 @@ const AllBooks = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3000/books')
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+    fetch(`${apiUrl}/books`)
       .then((res) => res.json())
       .then((data) => {
         setBooks(data);

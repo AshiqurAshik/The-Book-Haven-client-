@@ -6,32 +6,37 @@ import Loading from '../../Components/Loading/Loading';
 const TopBooks = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchTopBooks = async () => {
       try {
-        const res = await axios.get('http://localhost:3000/books');
+        const res = await axios.get(`${API_URL}/books`);
         const sortedBooks = res.data
-          .sort((a, b) => b.rating - a.rating) 
-          .slice(0, 3); 
+          .sort((a, b) => b.rating - a.rating)
+          .slice(0, 3);
         setBooks(sortedBooks);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching top books:', err);
+        setError(true);
         setLoading(false);
       }
     };
 
     fetchTopBooks();
-  }, []);
+  }, [API_URL]);
 
-  if (loading)
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <span className="loading loading-spinner text-warning text-6xl"></span>
-    </div>
-  );
+  if (loading) return <Loading />;
 
+  if (error)
+    return (
+      <p className="text-center mt-10 text-red-600 dark:text-red-400 font-medium">
+        Failed to load top books. Please try again later.
+      </p>
+    );
 
   if (books.length === 0)
     return (
@@ -47,14 +52,17 @@ const TopBooks = () => {
           Top Rated Books
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8 justify-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 justify-items-center">
           {books.map((book) => (
             <div
               key={book._id}
               className="w-full bg-[#FAF9F6] dark:bg-[#2A1F1B] text-[#3B2C24] dark:text-[#F8F4E8] rounded-2xl shadow-lg dark:shadow-gray-800 hover:shadow-2xl dark:hover:shadow-gray-700 transition-shadow duration-300 flex flex-col"
             >
               <img
-                src={book.coverImage}
+                src={
+                  book.coverImage ||
+                  'https://via.placeholder.com/150x220?text=No+Image'
+                }
                 alt={book.title}
                 className="w-full h-64 object-contain rounded-t-2xl bg-[#FAF9F6] dark:bg-[#2A1F1B] transition-colors duration-500"
               />
@@ -65,9 +73,11 @@ const TopBooks = () => {
 
                 <div className="flex items-center justify-between mb-4">
                   <span className="bg-[#D17E5E] dark:bg-[#B35B3B] text-white text-xs px-3 py-1 rounded-full font-semibold">
-                    {book.genre}
+                    {book.genre || 'Unknown'}
                   </span>
-                  <span className="font-bold text-yellow-500">⭐ {book.rating}</span>
+                  <span className="font-bold text-yellow-500">
+                    ⭐ {book.rating || 'N/A'}
+                  </span>
                 </div>
 
                 <NavLink

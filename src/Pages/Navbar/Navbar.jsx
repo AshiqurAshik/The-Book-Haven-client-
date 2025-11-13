@@ -152,10 +152,14 @@ const Navbar = () => {
                 <span className="font-semibold text-[#3B2C24] dark:text-[#F8F4E8] truncate">
                   {user.displayName}
                 </span>
-                <span className="text-gray-600 dark:text-gray-300 truncate">{user.email}</span>
+                <span className="text-gray-600 dark:text-gray-300 truncate">
+                  {user.email}
+                </span>
 
                 <label className="swap swap-rotate flex items-center gap-2 mt-1">
-                  <span className="text-[#3B2C24] dark:text-[#F8F4E8] text-left text-sm">Theme</span>
+                  <span className="text-[#3B2C24] dark:text-[#F8F4E8] text-left text-sm">
+                    Theme
+                  </span>
                   <input
                     type="checkbox"
                     checked={theme === 'dark'}

@@ -5,8 +5,10 @@ const RecentBook = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
-    fetch('http://localhost:3000/recentBook')
+    fetch(`${API_URL}/recentBook`)
       .then((res) => res.json())
       .then((data) => {
         setBooks(data);
@@ -16,15 +18,14 @@ const RecentBook = () => {
         console.error('Error fetching recent books:', err);
         setLoading(false);
       });
-  }, []);
+  }, [API_URL]);
 
   if (loading)
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <span className="loading loading-spinner text-warning text-6xl"></span>
-    </div>
-  );
-
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <span className="loading loading-spinner text-warning text-6xl"></span>
+      </div>
+    );
 
   if (books.length === 0) {
     return (
@@ -48,7 +49,7 @@ const RecentBook = () => {
               className="w-full bg-[#FAF9F6] dark:bg-[#2A221D] text-[#3B2C24] dark:text-[#F8F4E8] rounded-2xl shadow-lg dark:shadow-gray-800 hover:shadow-2xl dark:hover:shadow-gray-700 transition-shadow duration-300 flex flex-col"
             >
               <img
-                src={book.coverImage}
+                src={book.coverImage || 'https://via.placeholder.com/150x220?text=No+Image'}
                 alt={book.title}
                 className="w-full h-auto max-h-64 object-contain rounded-t-2xl bg-[#FAF9F6] dark:bg-[#2A221D] transition-colors duration-500"
               />
@@ -59,10 +60,10 @@ const RecentBook = () => {
 
                 <div className="flex items-center justify-between mb-4">
                   <span className="bg-[#D17E5E] dark:bg-[#B35B3B] text-white text-xs px-3 py-1 rounded-full font-semibold">
-                    {book.genre}
+                    {book.genre || 'Unknown'}
                   </span>
                   <span className="font-bold text-yellow-500">
-                    ⭐ {book.rating}
+                    ⭐ {book.rating || 'N/A'}
                   </span>
                 </div>
 

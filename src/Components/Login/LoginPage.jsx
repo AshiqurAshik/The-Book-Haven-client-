@@ -16,52 +16,52 @@ const LoginPage = () => {
   const [resetEmail, setResetEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const API_URL = import.meta.env.VITE_API_URL;
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
     setLoading(true);
 
-    SignInUser(email, password)
-      .then(() => {
-        toast.success('User logged in successfully!');
-        const from = location.state?.from?.pathname || '/';
-        navigate(from, { replace: true });
-        setLoading(false);
-      })
-      .catch(() => {
-        toast.error('Login failed! Please check your email and password.');
-        setLoading(false);
-      });
+    try {
+      await SignInUser(email, password);
+      toast.success('User logged in successfully!');
+      const from = location.state?.from?.pathname || '/';
+      navigate(from, { replace: true });
+    } catch {
+      toast.error('Login failed! Please check your email and password.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = async () => {
     setLoading(true);
-    googleSignIn()
-      .then((result) => {
-        toast.success('Logged in with Google successfully!');
-        navigate(location.state?.from || '/');
-        setLoading(false);
+    try {
+      const result = await googleSignIn();
+      toast.success('Logged in with Google successfully!');
+      navigate(location.state?.from || '/');
 
-        const newUser = {
-          name: result.user.displayName,
-          email: result.user.email,
-          image: result.user.photoURL,
-        };
+      const newUser = {
+        name: result.user.displayName,
+        email: result.user.email,
+        image: result.user.photoURL,
+      };
 
-        fetch('http://localhost:3000/users', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(newUser),
-        }).then((res) => res.json());
-      })
-      .catch(() => {
-        toast.error('Google Sign-In failed. Please try again.');
-        setLoading(false);
+      await fetch(`${API_URL}/users`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newUser),
       });
+    } catch {
+      toast.error('Google Sign-In failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleForgotPassword = () => {
+  const handleForgotPassword = async () => {
     if (!resetEmail) {
       toast.error('Please enter your email to reset password.');
       return;
@@ -72,14 +72,15 @@ const LoginPage = () => {
       handleCodeInApp: true,
     };
 
-    sendPasswordResetEmail(auth, resetEmail, actionCodeSettings)
-      .then(() => {
-        toast.success(
-          `Password reset email sent! Check your inbox for ${resetEmail}`
-        );
-        window.open('https://mail.google.com', '_blank');
-      })
-      .catch((error) => toast.error(error.message));
+    try {
+      await sendPasswordResetEmail(auth, resetEmail, actionCodeSettings);
+      toast.success(
+        `Password reset email sent! Check your inbox: ${resetEmail}`
+      );
+      window.open('https://mail.google.com', '_blank');
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (

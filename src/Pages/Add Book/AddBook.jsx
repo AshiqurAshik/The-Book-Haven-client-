@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../Auth/AuthContext';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast, Toaster } from 'react-hot-toast';
 
 const AddBook = () => {
   const { user } = useContext(AuthContext);
@@ -24,11 +23,20 @@ const AddBook = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!user?.email) {
+      toast.error('Please login to add a book!');
+      return;
+    }
 
-    const newBook = { ...book, userEmail: user.email };
+    const newBook = {
+      ...book,
+      userEmail: user.email,
+      rating: Number(book.rating),
+      publicationYear: Number(book.publicationYear),
+    };
 
     try {
-      const res = await fetch('http://localhost:3000/books', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/books`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newBook),
@@ -37,6 +45,8 @@ const AddBook = () => {
       if (!res.ok) throw new Error('Failed to add book');
 
       toast.success('📚 Book added successfully!');
+
+      // Reset form
       setBook({
         title: '',
         author: '',
@@ -65,31 +75,50 @@ const AddBook = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {['title','author','genre','rating','language','publicationYear','coverImage'].map((field) => (
-              <div key={field} className={field === 'coverImage' || field === 'summary' ? 'md:col-span-2' : ''}>
+            {[
+              'title',
+              'author',
+              'genre',
+              'rating',
+              'language',
+              'publicationYear',
+              'coverImage',
+            ].map((field) => (
+              <div
+                key={field}
+                className={
+                  field === 'coverImage' || field === 'summary'
+                    ? 'md:col-span-2'
+                    : ''
+                }
+              >
                 <label className="block text-[#3B2C24] dark:text-[#F8F4E8] font-medium mb-1 capitalize">
-                  {field === 'coverImage' ? 'Cover Image URL' : field === 'publicationYear' ? 'Publication Year' : field}
+                  {field === 'coverImage'
+                    ? 'Cover Image URL'
+                    : field === 'publicationYear'
+                    ? 'Publication Year'
+                    : field}
                 </label>
-                {field !== 'summary' ? (
-                  <input
-                    name={field}
-                    value={book[field]}
-                    onChange={handleChange}
-                    placeholder={field === 'rating' ? 'e.g. 4.5' : field === 'language' ? 'e.g. English' : `Enter ${field}`}
-                    type={field === 'rating' || field === 'publicationYear' ? 'number' : 'text'}
-                    className="w-full border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#D17E5E] outline-none bg-white dark:bg-[#5A4638] text-[#3B2C24] dark:text-[#F8F4E8]"
-                    required
-                  />
-                ) : (
-                  <textarea
-                    name="summary"
-                    value={book.summary}
-                    onChange={handleChange}
-                    placeholder="Write a short description of the book..."
-                    className="w-full border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3 h-28 focus:ring-2 focus:ring-[#D17E5E] outline-none resize-none bg-white dark:bg-[#5A4638] text-[#3B2C24] dark:text-[#F8F4E8]"
-                    required
-                  />
-                )}
+                <input
+                  name={field}
+                  value={book[field]}
+                  onChange={handleChange}
+                  placeholder={
+                    field === 'rating'
+                      ? 'e.g. 4.5'
+                      : field === 'language'
+                      ? 'e.g. English'
+                      : `Enter ${field}`
+                  }
+                  type={
+                    field === 'rating' || field === 'publicationYear'
+                      ? 'number'
+                      : 'text'
+                  }
+                  step={field === 'rating' ? '0.1' : undefined}
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#D17E5E] outline-none bg-white dark:bg-[#5A4638] text-[#3B2C24] dark:text-[#F8F4E8]"
+                  required
+                />
               </div>
             ))}
 
@@ -120,7 +149,7 @@ const AddBook = () => {
         </form>
       </div>
 
-      <ToastContainer position="top-right" />
+      <Toaster position="top-right" reverseOrder={false} />
     </div>
   );
 };
