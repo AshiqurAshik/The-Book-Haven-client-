@@ -13,7 +13,8 @@ import AddBook from './Pages/Add Book/AddBook';
 import MyBook from './Pages/My book/MyBook';
 import PrivateRoute from './Components/Private Route/PrivateRoute';
 import ErrorPage from './Components/Error page/ErrorPage';
-import BookDetails from './Pages/Book Details/BookDetails'; // ✅ fixed casing
+import BookDetails from './Pages/Book Details/BookDetails'; 
+
 
 const router = createBrowserRouter([
   {
@@ -45,7 +46,7 @@ const router = createBrowserRouter([
             <MyBook />
           </PrivateRoute>
         ),
-      },
+      }
     ],
   },
   {

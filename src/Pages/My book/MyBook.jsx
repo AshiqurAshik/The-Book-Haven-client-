@@ -98,7 +98,7 @@ const MyBook = () => {
   if (!books.length)
     return (
       <div className="h-100">
-        <p className="text-center mt-10 text-gray-600 font-medium">
+        <p className="text-center flex justify-center items-center text-gray-600 dark:bg-[#2A1F17] h-full font-medium">
           You haven't added any books yet.
         </p>
       </div>
@@ -184,7 +184,6 @@ const MyBook = () => {
         </table>
       </div>
 
-      {/* Update Modal */}
       {modalOpen && currentBook && (
         <div className="modal modal-open">
           <div className="modal-box w-11/12 max-w-xl dark:bg-[#2A1F17] transition-colors duration-500">

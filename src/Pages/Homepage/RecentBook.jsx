@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import Loading from '../../Components/Loading/Loading';
 
 const RecentBook = () => {
   const [books, setBooks] = useState([]);
