@@ -12,7 +12,8 @@ const Banner = () => {
   const books = [book1, book2, book3, book4, book5];
 
   return (
-    <div className="w-11/12 mx-auto h-[500px] md:h-[600px] relative overflow-hidden rounded-xl my-10">
+    <div className='w-full bg-[#F8F4E8] dark:bg-[#3B2A23] py-10'>
+       <div className="w-11/12 mx-auto h-[500px] md:h-[600px] relative overflow-hidden rounded-xl ">
       <img
         src={book1}
         alt="Background Book"
@@ -68,6 +69,7 @@ const Banner = () => {
         />
       ))}
     </div>
+   </div>
   );
 };
 

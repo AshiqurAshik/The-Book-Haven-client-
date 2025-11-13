@@ -36,7 +36,7 @@ const AddBook = () => {
 
       if (!res.ok) throw new Error('Failed to add book');
 
-      toast.success(' Book added successfully!');
+      toast.success('📚 Book added successfully!');
       setBook({
         title: '',
         author: '',
@@ -54,146 +54,56 @@ const AddBook = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FFF8F1] to-[#F7EBDD] flex items-center justify-center px-6 py-12">
-      <div className="w-full max-w-4xl bg-white/90 backdrop-blur-lg shadow-xl rounded-3xl p-10 border border-[#E9DAC1] transition-all hover:shadow-2xl">
-        {/* Header */}
-        <h2 className="text-4xl font-extrabold text-center text-[#3B2C24] mb-8 tracking-wide">
+    <div className="min-h-screen bg-[#FFF8F1] dark:bg-[#3B2A23] transition-colors duration-500 flex items-center justify-center px-6 py-12">
+      <div className="w-full max-w-4xl bg-white/90 dark:bg-[#4C3A2F]/90 backdrop-blur-lg shadow-xl rounded-3xl p-10 border border-[#E9DAC1] dark:border-[#5A4638] transition-all hover:shadow-2xl">
+        <h2 className="text-4xl font-extrabold text-center text-[#3B2C24] dark:text-[#F8F4E8] mb-8 tracking-wide">
           Add a New Book
         </h2>
-        <p className="text-center text-[#6B5B50] mb-10 text-sm">
+        <p className="text-center text-[#6B5B50] dark:text-[#E8DCC2] mb-10 text-sm">
           Share your favorite books with the world 🌍
         </p>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Grid Inputs */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-[#3B2C24] font-medium mb-1">
-                Title
-              </label>
-              <input
-                name="title"
-                value={book.title}
-                onChange={handleChange}
-                placeholder="Enter book title"
-                className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#D17E5E] outline-none"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-[#3B2C24] font-medium mb-1">
-                Author
-              </label>
-              <input
-                name="author"
-                value={book.author}
-                onChange={handleChange}
-                placeholder="Author name"
-                className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#D17E5E] outline-none"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-[#3B2C24] font-medium mb-1">
-                Genre
-              </label>
-              <input
-                name="genre"
-                value={book.genre}
-                onChange={handleChange}
-                placeholder="e.g. Fiction, Mystery"
-                className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#D17E5E] outline-none"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-[#3B2C24] font-medium mb-1">
-                Rating
-              </label>
-              <input
-                name="rating"
-                type="number"
-                step="0.1"
-                value={book.rating}
-                onChange={handleChange}
-                placeholder="e.g. 4.5"
-                className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#D17E5E] outline-none"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-[#3B2C24] font-medium mb-1">
-                Language
-              </label>
-              <input
-                name="language"
-                value={book.language}
-                onChange={handleChange}
-                placeholder="e.g. English, Bengali"
-                className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#D17E5E] outline-none"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-[#3B2C24] font-medium mb-1">
-                Publication Year
-              </label>
-              <input
-                name="publicationYear"
-                type="number"
-                value={book.publicationYear}
-                onChange={handleChange}
-                placeholder="e.g. 1948"
-                className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#D17E5E] outline-none"
-                required
-              />
-            </div>
+            {['title','author','genre','rating','language','publicationYear','coverImage'].map((field) => (
+              <div key={field} className={field === 'coverImage' || field === 'summary' ? 'md:col-span-2' : ''}>
+                <label className="block text-[#3B2C24] dark:text-[#F8F4E8] font-medium mb-1 capitalize">
+                  {field === 'coverImage' ? 'Cover Image URL' : field === 'publicationYear' ? 'Publication Year' : field}
+                </label>
+                {field !== 'summary' ? (
+                  <input
+                    name={field}
+                    value={book[field]}
+                    onChange={handleChange}
+                    placeholder={field === 'rating' ? 'e.g. 4.5' : field === 'language' ? 'e.g. English' : `Enter ${field}`}
+                    type={field === 'rating' || field === 'publicationYear' ? 'number' : 'text'}
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#D17E5E] outline-none bg-white dark:bg-[#5A4638] text-[#3B2C24] dark:text-[#F8F4E8]"
+                    required
+                  />
+                ) : (
+                  <textarea
+                    name="summary"
+                    value={book.summary}
+                    onChange={handleChange}
+                    placeholder="Write a short description of the book..."
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3 h-28 focus:ring-2 focus:ring-[#D17E5E] outline-none resize-none bg-white dark:bg-[#5A4638] text-[#3B2C24] dark:text-[#F8F4E8]"
+                    required
+                  />
+                )}
+              </div>
+            ))}
 
             <div className="md:col-span-2">
-              <label className="block text-[#3B2C24] font-medium mb-1">
-                Cover Image URL
-              </label>
-              <input
-                name="coverImage"
-                value={book.coverImage}
-                onChange={handleChange}
-                placeholder="Paste image link"
-                className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#D17E5E] outline-none"
-                required
-              />
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-[#3B2C24] font-medium mb-1">
+              <label className="block text-[#3B2C24] dark:text-[#F8F4E8] font-medium mb-1">
                 Uploaded by (Email)
               </label>
               <input
                 type="email"
                 value={user?.email || ''}
                 readOnly
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 bg-gray-100 text-gray-600 cursor-not-allowed"
+                className="w-full border border-gray-200 dark:border-gray-500 rounded-xl px-4 py-3 bg-gray-100 dark:bg-[#4C3A2F] text-gray-600 dark:text-[#F8F4E8] cursor-not-allowed"
               />
             </div>
-          </div>
-
-          <div>
-            <label className="block text-[#3B2C24] font-medium mb-1">
-              Summary
-            </label>
-            <textarea
-              name="summary"
-              value={book.summary}
-              onChange={handleChange}
-              placeholder="Write a short description of the book..."
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 h-28 focus:ring-2 focus:ring-[#D17E5E] outline-none resize-none"
-              required
-            />
           </div>
 
           <button

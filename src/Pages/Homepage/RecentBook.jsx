@@ -19,22 +19,26 @@ const RecentBook = () => {
       });
   }, []);
 
-  if (loading) {
-    return <Loading />;
-  }
+  if (loading)
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <span className="loading loading-spinner text-warning text-6xl"></span>
+    </div>
+  );
+
 
   if (books.length === 0) {
     return (
-      <p className="text-center mt-10 text-[#3B2C24] font-medium">
+      <p className="text-center mt-10 text-[#3B2C24] dark:text-[#F8F4E8] font-medium">
         No recent books found.
       </p>
     );
   }
 
   return (
-    <div className=" min-h-screen py-12">
+    <div className="min-h-screen py-12 bg-[#F8F4E8] dark:bg-[#3B2A23] transition-colors duration-500">
       <div className="w-11/12 mx-auto">
-        <h2 className="text-4xl font-bold mb-10 text-center text-[#3B2C24]">
+        <h2 className="text-4xl font-bold mb-10 text-center text-[#3B2C24] dark:text-[#F8F4E8] transition-colors duration-500">
           Recent Books
         </h2>
 
@@ -42,22 +46,20 @@ const RecentBook = () => {
           {books.map((book) => (
             <div
               key={book._id}
-              className="w-full bg-[#FAF9F6] text-[#3B2C24] rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col"
+              className="w-full bg-[#FAF9F6] dark:bg-[#2A221D] text-[#3B2C24] dark:text-[#F8F4E8] rounded-2xl shadow-lg dark:shadow-gray-800 hover:shadow-2xl dark:hover:shadow-gray-700 transition-shadow duration-300 flex flex-col"
             >
               <img
                 src={book.coverImage}
                 alt={book.title}
-                className="w-full h-auto max-h-64 object-contain rounded-t-2xl bg-[#FAF9F6]"
+                className="w-full h-auto max-h-64 object-contain rounded-t-2xl bg-[#FAF9F6] dark:bg-[#2A221D] transition-colors duration-500"
               />
 
               <div className="p-5 flex flex-col flex-grow">
                 <h3 className="text-xl font-bold mb-3">{book.title}</h3>
-                <p className="text-sm mb-3 font-medium text-[#3B2C24]">
-                  by {book.author}
-                </p>
+                <p className="text-sm mb-3 font-medium">by {book.author}</p>
 
                 <div className="flex items-center justify-between mb-4">
-                  <span className="bg-[#D17E5E] text-white text-xs px-3 py-1 rounded-full font-semibold">
+                  <span className="bg-[#D17E5E] dark:bg-[#B35B3B] text-white text-xs px-3 py-1 rounded-full font-semibold">
                     {book.genre}
                   </span>
                   <span className="font-bold text-yellow-500">
@@ -67,7 +69,7 @@ const RecentBook = () => {
 
                 <Link
                   to={`/books/${book._id}`}
-                  className="mt-auto text-center bg-[#4C3A2F] text-white py-2 rounded-xl hover:bg-[#3B2C24] transition font-semibold"
+                  className="mt-auto text-center bg-[#4C3A2F] dark:bg-[#D17E5E] dark:text-[#1E1A17] text-white py-2 rounded-xl hover:bg-[#3B2C24] dark:hover:bg-[#B35B3B] transition font-semibold"
                 >
                   View Details
                 </Link>

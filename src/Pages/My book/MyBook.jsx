@@ -12,23 +12,22 @@ const MyBook = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [currentBook, setCurrentBook] = useState(null);
 
-  const fetchBooks = () => {
+  const fetchBooks = async () => {
     if (!user?.email) return;
     setLoading(true);
-    fetch(`http://localhost:3000/books/by-email/${user.email}`)
-      .then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch books');
-        return res.json();
-      })
-      .then((data) => {
-        setBooks(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError(err.message);
-        setLoading(false);
-      });
+    try {
+      const res = await fetch(
+        `http://localhost:3000/books/by-email/${user.email}`
+      );
+      if (!res.ok) throw new Error('Failed to fetch books');
+      const data = await res.json();
+      setBooks(data);
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -44,47 +43,51 @@ const MyBook = () => {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!',
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:3000/books/${id}`, { method: 'DELETE' })
-          .then((res) => res.json())
-          .then(() => {
-            setBooks((prev) => prev.filter((book) => book._id !== id));
-            toast.success('Book deleted successfully!');
-          })
-          .catch((err) => toast.error('Failed to delete book!'));
+        try {
+          await fetch(`http://localhost:3000/books/${id}`, {
+            method: 'DELETE',
+          });
+          setBooks((prev) => prev.filter((book) => book._id !== id));
+          toast.success('Book deleted successfully!');
+        } catch (err) {
+          toast.error('Failed to delete book!');
+        }
       }
     });
   };
 
-  const handleUpdateSubmit = (e) => {
+  const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     if (!currentBook) return;
 
     const updatedFields = {};
-    if (currentBook.title) updatedFields.title = currentBook.title;
-    if (currentBook.author) updatedFields.author = currentBook.author;
-    if (currentBook.genre) updatedFields.genre = currentBook.genre;
-    if (currentBook.rating) updatedFields.rating = currentBook.rating;
-    if (currentBook.summary) updatedFields.summary = currentBook.summary;
-    if (currentBook.coverImage)
-      updatedFields.coverImage = currentBook.coverImage;
-    if (currentBook.language) updatedFields.language = currentBook.language;
-    if (currentBook.publicationYear)
-      updatedFields.publicationYear = currentBook.publicationYear;
+    [
+      'title',
+      'author',
+      'genre',
+      'rating',
+      'summary',
+      'coverImage',
+      'language',
+      'publicationYear',
+    ].forEach((key) => {
+      if (currentBook[key]) updatedFields[key] = currentBook[key];
+    });
 
-    fetch(`http://localhost:3000/books/${currentBook._id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updatedFields),
-    })
-      .then((res) => res.json())
-      .then(() => {
-        toast.success('Book updated successfully!');
-        setModalOpen(false);
-        fetchBooks();
-      })
-      .catch((err) => toast.error('Failed to update book!'));
+    try {
+      await fetch(`http://localhost:3000/books/${currentBook._id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedFields),
+      });
+      toast.success('Book updated successfully!');
+      setModalOpen(false);
+      fetchBooks();
+    } catch (err) {
+      toast.error('Failed to update book!');
+    }
   };
 
   if (loading) return <Loading />;
@@ -92,57 +95,53 @@ const MyBook = () => {
     return (
       <p className="text-red-600 text-center mt-10 font-semibold">{error}</p>
     );
-  if (books.length === 0)
+  if (!books.length)
     return (
-      <div className='h-100'>
+      <div className="h-100">
         <p className="text-center mt-10 text-gray-600 font-medium">
-        You haven't added any books yet.
-      </p>
+          You haven't added any books yet.
+        </p>
       </div>
-      
     );
 
   return (
-    <div className="py-10 px-5 max-w-7xl mx-auto">
+    <section className="py-10 px-5 w-full rounded-2xl transition-colors duration-500 bg-white dark:bg-[#2A1F17]">
       <Toaster position="top-right" reverseOrder={false} />
-      <h2 className="text-4xl font-extrabold mb-8 text-center text-[#4C3A2F]">
+      <h2 className="text-4xl font-extrabold mb-8 text-center text-[#4C3A2F] dark:text-[#FFF8F1]">
         My Books
       </h2>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white shadow-lg rounded-2xl overflow-hidden">
-          <thead className="bg-[#F8F4E8]">
+        <table className="w-11/12 mx-auto shadow-lg rounded-2xl overflow-hidden bg-white dark:bg-[#2A1F17] transition-colors duration-500">
+          <thead className="bg-[#F8F4E8] dark:bg-[#3B1F14]">
             <tr>
-              <th className="text-left px-6 py-3 text-gray-600 font-semibold">
-                #
-              </th>
-              <th className="text-left px-6 py-3 text-gray-600 font-semibold">
-                Cover
-              </th>
-              <th className="text-left px-6 py-3 text-gray-600 font-semibold">
-                Title
-              </th>
-              <th className="text-left px-6 py-3 text-gray-600 font-semibold">
-                Author
-              </th>
-              <th className="text-left px-6 py-3 text-gray-600 font-semibold">
-                Genre
-              </th>
-              <th className="text-left px-6 py-3 text-gray-600 font-semibold">
-                Rating
-              </th>
-              <th className="text-left px-6 py-3 text-gray-600 font-semibold">
-                Actions
-              </th>
+              {[
+                '#',
+                'Cover',
+                'Title',
+                'Author',
+                'Genre',
+                'Rating',
+                'Actions',
+              ].map((header) => (
+                <th
+                  key={header}
+                  className="text-left px-6 py-3 text-gray-600 dark:text-[#F8F4E8] font-semibold"
+                >
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {books.map((book, index) => (
               <tr
                 key={book._id}
-                className="hover:bg-[#FFF5E0] transition duration-200"
+                className="hover:bg-[#FFF5E0] dark:hover:bg-[#4C3A2F]/50 transition duration-200"
               >
-                <td className="px-6 py-4">{index + 1}</td>
+                <td className="px-6 py-4 text-[#4C3A2F] dark:text-[#FFF8F1]">
+                  {index + 1}
+                </td>
                 <td className="px-6 py-4">
                   <img
                     src={book.coverImage}
@@ -150,12 +149,16 @@ const MyBook = () => {
                     className="w-16 h-20 object-cover rounded-lg shadow-sm"
                   />
                 </td>
-                <td className="px-6 py-4 font-semibold text-[#3B2C24]">
+                <td className="px-6 py-4 font-semibold text-[#4C3A2F] dark:text-[#FFF8F1]">
                   {book.title}
                 </td>
-                <td className="px-6 py-4 text-gray-700">{book.author}</td>
-                <td className="px-6 py-4 text-gray-700">{book.genre}</td>
-                <td className="px-6 py-4 text-yellow-500 font-semibold">
+                <td className="px-6 py-4 text-gray-700 dark:text-[#FFF8F1]">
+                  {book.author}
+                </td>
+                <td className="px-6 py-4 text-gray-700 dark:text-[#FFF8F1]">
+                  {book.genre}
+                </td>
+                <td className="px-6 py-4 text-yellow-400 font-semibold">
                   ⭐ {book.rating}
                 </td>
                 <td className="px-6 py-4 flex gap-2">
@@ -184,90 +187,59 @@ const MyBook = () => {
       {/* Update Modal */}
       {modalOpen && currentBook && (
         <div className="modal modal-open">
-          <div className="modal-box w-11/12 max-w-xl">
-            <h3 className="font-bold text-2xl mb-4">Update Book</h3>
+          <div className="modal-box w-11/12 max-w-xl dark:bg-[#2A1F17] transition-colors duration-500">
+            <h3 className="font-bold text-2xl mb-4 text-[#4C3A2F] dark:text-[#FFF8F1]">
+              Update Book
+            </h3>
             <form onSubmit={handleUpdateSubmit} className="flex flex-col gap-3">
-              <input
-                type="text"
-                placeholder="Title"
-                value={currentBook.title || ''}
-                onChange={(e) =>
-                  setCurrentBook({ ...currentBook, title: e.target.value })
-                }
-                className="input input-bordered w-full"
-                required
-              />
-              <input
-                type="text"
-                placeholder="Author"
-                value={currentBook.author || ''}
-                onChange={(e) =>
-                  setCurrentBook({ ...currentBook, author: e.target.value })
-                }
-                className="input input-bordered w-full"
-                required
-              />
-              <input
-                type="text"
-                placeholder="Genre"
-                value={currentBook.genre || ''}
-                onChange={(e) =>
-                  setCurrentBook({ ...currentBook, genre: e.target.value })
-                }
-                className="input input-bordered w-full"
-              />
-              <input
-                type="number"
-                step="0.1"
-                placeholder="Rating"
-                value={currentBook.rating || ''}
-                onChange={(e) =>
-                  setCurrentBook({ ...currentBook, rating: e.target.value })
-                }
-                className="input input-bordered w-full"
-              />
-              <textarea
-                placeholder="Summary"
-                value={currentBook.summary || ''}
-                onChange={(e) =>
-                  setCurrentBook({ ...currentBook, summary: e.target.value })
-                }
-                className="textarea textarea-bordered w-full"
-              />
-              <input
-                type="text"
-                placeholder="Cover Image URL"
-                value={currentBook.coverImage || ''}
-                onChange={(e) =>
-                  setCurrentBook({ ...currentBook, coverImage: e.target.value })
-                }
-                className="input input-bordered w-full"
-              />
-              <input
-                type="text"
-                placeholder="Language"
-                value={currentBook.language || ''}
-                onChange={(e) =>
-                  setCurrentBook({ ...currentBook, language: e.target.value })
-                }
-                className="input input-bordered w-full"
-              />
-              <input
-                type="number"
-                placeholder="Publication Year"
-                value={currentBook.publicationYear || ''}
-                onChange={(e) =>
-                  setCurrentBook({
-                    ...currentBook,
-                    publicationYear: e.target.value,
-                  })
-                }
-                className="input input-bordered w-full"
-              />
+              {[
+                'title',
+                'author',
+                'genre',
+                'rating',
+                'summary',
+                'coverImage',
+                'language',
+                'publicationYear',
+              ].map((field) =>
+                field === 'summary' ? (
+                  <textarea
+                    key={field}
+                    placeholder="Summary"
+                    value={currentBook.summary || ''}
+                    onChange={(e) =>
+                      setCurrentBook({
+                        ...currentBook,
+                        summary: e.target.value,
+                      })
+                    }
+                    className="textarea textarea-bordered w-full dark:bg-[#3B1F14] dark:text-[#FFF8F1]"
+                  />
+                ) : (
+                  <input
+                    key={field}
+                    type={
+                      field === 'rating' || field === 'publicationYear'
+                        ? 'number'
+                        : 'text'
+                    }
+                    step={field === 'rating' ? '0.1' : undefined}
+                    placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                    value={currentBook[field] || ''}
+                    onChange={(e) =>
+                      setCurrentBook({
+                        ...currentBook,
+                        [field]: e.target.value,
+                      })
+                    }
+                    className="input input-bordered w-full dark:bg-[#3B1F14] dark:text-[#FFF8F1]"
+                  />
+                )
+              )}
               <div className="modal-action mt-2">
                 <button
                   type="button"
-                  className="btn btn-ghost"
+                  className="btn btn-ghost text-[#4C3A2F] dark:text-[#FFF8F1]"
                   onClick={() => setModalOpen(false)}
                 >
                   Cancel
@@ -280,7 +252,7 @@ const MyBook = () => {
           </div>
         </div>
       )}
-    </div>
+    </section>
   );
 };
 

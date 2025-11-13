@@ -27,12 +27,12 @@ const About = () => {
   ];
 
   return (
-    <section>
-      <div className="max-w-7xl mx-auto px-6 text-center">
-        <h2 className="text-4xl md:text-5xl font-extrabold text-[#3B2C24] mb-6 leading-tight">
+    <section className="w-full py-10 bg-[#F8F4E8] dark:bg-[#3B2A23] text-[#3B2C24] dark:text-[#F8F4E8]">
+      <div className="max-w-7xl mx-auto px-6 text-center  ">
+        <h2 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">
           Why Choose Book Haven
         </h2>
-        <p className="text-lg md:text-xl text-[#3B2C24] max-w-3xl mx-auto mb-16 leading-relaxed">
+        <p className="text-lg md:text-xl  max-w-3xl mx-auto mb-16 leading-relaxed">
           Book Haven is designed for book lovers who want to explore, discover,
           and share amazing stories. Our platform brings you the best books,
           top-rated picks, and a vibrant community of readers.
@@ -42,20 +42,22 @@ const About = () => {
           {features.map((feature, idx) => (
             <div
               key={idx}
-              className="bg-white rounded-3xl p-10 shadow-md hover:shadow-xl transform hover:scale-105 transition duration-300 flex flex-col items-center text-center"
+              className="bg-white dark:bg-[#2A221D] rounded-3xl p-10 shadow-md dark:shadow-gray-800 hover:shadow-xl dark:hover:shadow-gray-700 transform hover:scale-105 transition duration-300 flex flex-col items-center text-center"
             >
               <div className="mb-5">{feature.icon}</div>
-              <h3 className="text-xl font-semibold mb-3 text-[#3B2C24]">
+              <h3 className="text-xl font-semibold mb-3 text-[#3B2C24] dark:text-[#F8F4E8]">
                 {feature.title}
               </h3>
-              <p className="text-gray-600 text-sm">{feature.desc}</p>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">
+                {feature.desc}
+              </p>
             </div>
           ))}
         </div>
 
         <Link
           to="/all-books"
-          className="inline-block mt-16 mb-10 bg-[#4C3A2F] text-white py-3 px-10 rounded-full text-lg font-semibold hover:bg-[#3B2C24] transition-all duration-300 shadow-lg hover:shadow-xl"
+          className="inline-block mt-16 mb-10 bg-[#4C3A2F] dark:bg-[#D17E5E] text-white  dark:hover:bg-[#B35B3B] py-3 px-10 rounded-full text-lg font-semibold hover:bg-[#3B2C24] transition-all duration-300 shadow-lg hover:shadow-xl"
         >
           Explore Books
         </Link>
