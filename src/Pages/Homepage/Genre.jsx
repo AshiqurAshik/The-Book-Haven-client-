@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   BookOpenIcon,
   HeartIcon,
@@ -6,7 +6,6 @@ import {
   UsersIcon,
   RocketIcon,
 } from 'lucide-react';
-import axios from 'axios';
 
 const genreStyles = {
   Fiction: {
@@ -15,51 +14,22 @@ const genreStyles = {
   },
   Mystery: {
     icon: <UsersIcon className="w-10 h-10 text-green-600" />,
-    gradient: 'from-green-100 to-green-50 dark:from-green-900 dark:to-green-800',
+    gradient:
+      'from-green-100 to-green-50 dark:from-green-900 dark:to-green-800',
   },
   'Sci-Fi': {
     icon: <RocketIcon className="w-10 h-10 text-purple-600" />,
-    gradient: 'from-purple-100 to-purple-50 dark:from-purple-900 dark:to-purple-800',
+    gradient:
+      'from-purple-100 to-purple-50 dark:from-purple-900 dark:to-purple-800',
   },
   Romance: {
     icon: <HeartIcon className="w-10 h-10 text-red-600" />,
     gradient: 'from-red-100 to-red-50 dark:from-red-900 dark:to-red-800',
   },
-  Default: {
-    icon: <StarIcon className="w-10 h-10 text-yellow-500" />,
-    gradient: 'from-gray-100 to-gray-50 dark:from-gray-900 dark:to-gray-800',
-  },
 };
 
 const GenreSection = () => {
-  const [topGenres, setTopGenres] = useState([]);
-  const API_URL = import.meta.env.VITE_API_URL;
-
-  useEffect(() => {
-    const fetchTopGenres = async () => {
-      try {
-        const res = await axios.get(`${API_URL}/books`);
-        const books = res.data;
-
-        const genreCount = {};
-        books.forEach((book) => {
-          const genre = book.genre || 'Default';
-          genreCount[genre] = (genreCount[genre] || 0) + 1;
-        });
-
-        const sortedGenres = Object.entries(genreCount)
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 8)
-          .map(([name]) => name);
-
-        setTopGenres(sortedGenres);
-      } catch (err) {
-        console.error('Error fetching books:', err);
-      }
-    };
-
-    fetchTopGenres();
-  }, [API_URL]);
+  const defaultGenres = ['Fiction', 'Mystery', 'Sci-Fi', 'Romance'];
 
   return (
     <section className="py-16 bg-[#F8F4E8] dark:bg-[#3B2A23] transition-colors duration-500">
@@ -69,8 +39,8 @@ const GenreSection = () => {
         </h2>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-6">
-          {topGenres.map((genre) => {
-            const style = genreStyles[genre] || genreStyles.Default;
+          {defaultGenres.map((genre) => {
+            const style = genreStyles[genre];
             return (
               <div
                 key={genre}

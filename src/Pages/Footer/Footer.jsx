@@ -1,6 +1,7 @@
 import React from 'react';
 import { SiX, SiYoutube, SiFacebook } from 'react-icons/si';
 import { IoLibrary } from 'react-icons/io5';
+import { NavLink } from 'react-router';
 
 const Footer = () => {
   return (
@@ -13,10 +14,11 @@ const Footer = () => {
       </div>
 
       <nav className="flex justify-center gap-6 flex-wrap">
-        <a className="hover:text-[#D17E5E] transition-colors">Home</a>
-        <a className="hover:text-[#D17E5E] transition-colors">All Books</a>
-        <a className="hover:text-[#D17E5E] transition-colors">Add Book</a>
-        <a className="hover:text-[#D17E5E] transition-colors">My Books</a>
+        <NavLink to="/" className="hover:text-[#D17E5E] transition-colors">Home</NavLink>
+        <NavLink to="/all-books" className="hover:text-[#D17E5E] transition-colors">All Book</NavLink>
+        <NavLink to="/add-book" className="hover:text-[#D17E5E] transition-colors">Add Book</NavLink>
+        <NavLink to="/my-books" className="hover:text-[#D17E5E] transition-colors">My Books</NavLink>
+
       </nav>
 
       <nav className="flex justify-center mt-4 gap-6 text-[#3B2C24] dark:text-[#F8F4E8] text-2xl">
