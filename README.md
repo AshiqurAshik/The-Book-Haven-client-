@@ -1,16 +1,60 @@
-# React + Vite
+📚 Book Haven
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Book Haven is a modern online library management system that allows users to add, view, update, and delete books easily.
+Built with the MERN stack, it offers a clean design, smooth interactions, and a fully responsive layout for an enjoyable reading management experience.
 
-Currently, two official plugins are available:
+🌐 Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🔗 Visit Book Haven
 
-## React Compiler
+🧠 Overview
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Book Haven was created as a practical full-stack project to demonstrate CRUD operations, RESTful API integration, and modern UI design using React and Tailwind CSS.
+It provides an intuitive interface for managing a digital book collection, suitable for both learning and personal use.
 
-## Expanding the ESLint configuration
+⚙️ Tech Stack
+🖥️ Frontend
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+React.js
+
+Tailwind CSS
+
+DaisyUI
+
+⚙️ Backend
+
+Express.js
+
+MongoDB
+
+☁️ Deployment
+
+Frontend: Netlify
+
+Backend: Vercel / Render
+
+🧩 Key Features
+
+📖 Add, edit, delete, and view books (Full CRUD functionality)
+
+🧭 Organized and responsive UI design
+
+🌙 Light and dark mode support
+
+🔔 Instant feedback with toast and alert notifications
+
+⚡ Fast performance with smooth animations and transitions
+
+🛠️ Dependencies
+
+axios – For API requests
+
+react-icons – For icons
+
+lucide-react – For modern icon components
+
+react-hot-toast – For toast notifications
+
+sweetalert2 – For confirmation dialogs
+
+daisyui – Tailwind-based UI components
